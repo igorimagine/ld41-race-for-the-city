@@ -12,23 +12,10 @@ onready var reward_delay_default = 15 #frames
 onready var reward_delay = reward_delay_default
 onready var main_camera = $MainCamera
 onready var ground_top = $GroundTop
-onready var town_hall_ui_spatial = $TownHallUISpatial
-onready var th_ui_area = $TownHallUISpatial/TownHallUICube/Area
-onready var th_ui_area_hit = false
 onready var yellow_cube_spatial = $YellowCubeSpatial
-onready var th_building = false
 onready var yellow_cube_scene = load("res://scenes/YellowCube.tscn")
-onready var last_building_number = 0
-onready var building_number = 0
-onready var town_halls = []
 
-#onready var house_ui_area = $HouseUISpatial/HouseUICube/Area
-#onready var house_ui_area_hit = false
-#onready var house_must_be_built = false
-#onready var last_house_building_number = 0
-#onready var house_building_number = 0
-#onready var houses = []
-
+onready var townhallBuildableEntity = null
 onready var houseBuildableEntity = null
 
 class BuildableEntity:
@@ -88,15 +75,11 @@ class BuildableEntity:
 func _ready():
 	randomize()
 	_move_reward()
+	townhallBuildableEntity = BuildableEntity.new()
+	townhallBuildableEntity.entity_ui_area = $TownHallUISpatial/TownHallUICube/Area
+	townhallBuildableEntity.scene_instance = yellow_cube_scene
 	houseBuildableEntity = BuildableEntity.new()
 	houseBuildableEntity.entity_ui_area = $HouseUISpatial/HouseUICube/Area
-	houseBuildableEntity.entity_ui_area_hit = false
-	houseBuildableEntity.entity_must_be_built = false
-	houseBuildableEntity.last_entity_building_number = 0
-	houseBuildableEntity.entity_building_number = 0
-	houseBuildableEntity.entities = []
-	houseBuildableEntity.entity_building = null
-	#houseBuildableEntity.scene_instance = yellow_cube_scene.instance()
 	houseBuildableEntity.scene_instance = yellow_cube_scene
 	pass
 
@@ -108,23 +91,12 @@ func _do_lmb():
 	var to = ray_origin + ray_direction * 1000.0
 	var space_state = ground_top.get_world().direct_space_state
 	var hit = space_state.intersect_ray(from, to)
-	if hit.size() != 0:
-		if hit.collider_id == th_ui_area.get_instance_id():
-			th_ui_area_hit = true
-			building_number += 1
-#		if hit.collider_id == house_ui_area.get_instance_id():
-#			house_ui_area_hit = true
-#			house_building_number += 1
+	townhallBuildableEntity.do_lmb_logic(hit)
 	houseBuildableEntity.do_lmb_logic(hit)
 
 func _process(delta):
 	reward_delay -= 1
-	var building = null
-	if (last_building_number > 0):
-		building = town_halls[town_halls.size() - 1]
-#	var house_building = null
-#	if (last_house_building_number > 0):
-#		house_building = houses[-1]
+	townhallBuildableEntity.process_beginning()
 	houseBuildableEntity.process_beginning()
 	if car_area.overlaps_area(road_top_area):
 		gold += 0.1
@@ -146,62 +118,15 @@ func _process(delta):
 		car_spatial.translate(Vector3(0, 0, -speed * delta))
 	if Input.is_action_just_pressed("LMB"):
 		_do_lmb()
-	if th_ui_area_hit:
-		var mouse_pos = get_viewport().get_mouse_position()
-		var ray_origin = main_camera.project_ray_origin(mouse_pos)
-		var ray_direction = main_camera.project_ray_normal(mouse_pos)
-		var from = ray_origin
-		var to = ray_origin + ray_direction * 1000.0
-		var space_state = ground_top.get_world().direct_space_state
-		var hit = space_state.intersect_ray(from, to)
-		if hit.size() != 0:
-			if building_number == (last_building_number + 1):
-				building = yellow_cube_scene.instance()
-				self.add_child(building)
-				town_halls.append(building)
-				last_building_number += 1
-			building.set_translation(Vector3(hit.position.x, 0, hit.position.z))
-			th_building = true
-	pass
-#	if house_ui_area_hit:
-#		var mouse_pos = get_viewport().get_mouse_position()
-#		var ray_origin = main_camera.project_ray_origin(mouse_pos)
-#		var ray_direction = main_camera.project_ray_normal(mouse_pos)
-#		var from = ray_origin
-#		var to = ray_origin + ray_direction * 1000.0
-#		var space_state = ground_top.get_world().direct_space_state
-#		var hit = space_state.intersect_ray(from, to)
-#		if hit.size() != 0:
-#			if house_building_number == (last_house_building_number + 1):
-#				house_building = yellow_cube_scene.instance()
-#				self.add_child(house_building)
-#				houses.append(house_building)
-#				last_house_building_number += 1
-#			house_building.set_translation(Vector3(hit.position.x, 0, hit.position.z))
-#			house_must_be_built = true
-#	pass
+	townhallBuildableEntity.process_middle(get_viewport().get_mouse_position(), main_camera, ground_top, self)
 	houseBuildableEntity.process_middle(get_viewport().get_mouse_position(), main_camera, ground_top, self)
 	if Input.is_action_just_pressed("Q"):
 		# place the building
-		if th_building:
-			th_building = false
-			th_ui_area_hit = false
-#		if house_must_be_built:
-#			house_must_be_built = false
-#			house_ui_area_hit = false
+		townhallBuildableEntity.input_add_logic()
 		houseBuildableEntity.input_add_logic()
 	if Input.is_action_just_pressed("E"):
 		# cancel building placement
-		if th_building:
-			th_building = false
-			th_ui_area_hit = false
-			building.queue_free()
-			building = null
-#		if house_must_be_built:
-#			house_must_be_built = false
-#			house_ui_area_hit = false
-#			house_building.queue_free()
-#			house_building = null
+		townhallBuildableEntity.input_remove_logic()
 		houseBuildableEntity.input_remove_logic()
 	
 func _move_reward():
