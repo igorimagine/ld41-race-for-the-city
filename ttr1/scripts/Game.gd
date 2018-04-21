@@ -27,6 +27,7 @@ class BuildableEntity:
 	var entities = []
 	var entity_building = null
 	var scene_instance = null
+	var gold_price = 0
 	
 	func do_lmb_logic(hit):
 		if hit.size() != 0:
@@ -60,10 +61,11 @@ class BuildableEntity:
 				entity_building.set_translation(Vector3(hit.position.x, 0, hit.position.z))
 				entity_must_be_built = true
 	
-	func input_add_logic():
+	func input_add_logic(gold_entity):
 		if entity_must_be_built:
 			entity_must_be_built = false
 			entity_ui_area_hit = false
+			gold_entity.gold -= gold_price
 	
 	func input_remove_logic():
 		if entity_must_be_built:
@@ -78,9 +80,11 @@ func _ready():
 	townhallBuildableEntity = BuildableEntity.new()
 	townhallBuildableEntity.entity_ui_area = $TownHallUISpatial/TownHallUICube/Area
 	townhallBuildableEntity.scene_instance = yellow_cube_scene
+	townhallBuildableEntity.gold_price = 125
 	houseBuildableEntity = BuildableEntity.new()
 	houseBuildableEntity.entity_ui_area = $HouseUISpatial/HouseUICube/Area
 	houseBuildableEntity.scene_instance = yellow_cube_scene
+	houseBuildableEntity.gold_price = 75
 	pass
 
 func _do_lmb():
@@ -122,8 +126,8 @@ func _process(delta):
 	houseBuildableEntity.process_middle(get_viewport().get_mouse_position(), main_camera, ground_top, self)
 	if Input.is_action_just_pressed("Q"):
 		# place the building
-		townhallBuildableEntity.input_add_logic()
-		houseBuildableEntity.input_add_logic()
+		townhallBuildableEntity.input_add_logic(self)
+		houseBuildableEntity.input_add_logic(self)
 	if Input.is_action_just_pressed("E"):
 		# cancel building placement
 		townhallBuildableEntity.input_remove_logic()
