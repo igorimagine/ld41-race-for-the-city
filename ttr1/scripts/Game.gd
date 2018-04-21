@@ -14,6 +14,7 @@ onready var main_camera = $MainCamera
 onready var ground_top = $GroundTop
 onready var yellow_cube_spatial = $YellowCubeSpatial
 onready var yellow_cube_scene = load("res://scenes/YellowCube.tscn")
+onready var no_gold_label = $NoGoldErrMsgTextureRect/NoGoldErrMsgLabel
 
 onready var townhallBuildableEntity = null
 onready var houseBuildableEntity = null
@@ -63,9 +64,17 @@ class BuildableEntity:
 	
 	func input_add_logic(gold_entity):
 		if entity_must_be_built:
-			entity_must_be_built = false
-			entity_ui_area_hit = false
-			gold_entity.gold -= gold_price
+			if gold_entity.gold >= gold_price:
+				entity_must_be_built = false
+				entity_ui_area_hit = false
+				gold_entity.gold -= gold_price
+			else:
+				err_msg_not_enough_gold(gold_price, gold_entity.no_gold_label)
+				
+	func err_msg_not_enough_gold(gold_price, label):
+		#finish me
+		label.text = "Not enough gold: (Cost: " + str(gold_price) + ")"
+		pass
 	
 	func input_remove_logic():
 		if entity_must_be_built:
@@ -77,6 +86,7 @@ class BuildableEntity:
 func _ready():
 	randomize()
 	_move_reward()
+	no_gold_label.text = ""
 	townhallBuildableEntity = BuildableEntity.new()
 	townhallBuildableEntity.entity_ui_area = $TownHallUISpatial/TownHallUICube/Area
 	townhallBuildableEntity.scene_instance = yellow_cube_scene
