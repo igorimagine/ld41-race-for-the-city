@@ -1,0 +1,130 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://scripts/Game.gd" type="Script" id=1]
+[ext_resource path="res://scenes/BasicCube.tscn" type="PackedScene" id=2]
+
+[node name="Game" type="Node" index="0"]
+
+script = ExtResource( 1 )
+
+[node name="RoadTopCube" parent="." index="0" instance=ExtResource( 2 )]
+
+transform = Transform( 23.7, 0, 0, 0, 0.2, 0, 0, 0, 5.5, 0.22741, -0.851607, 0.66008 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="MainCamera" type="Camera" parent="." index="1"]
+
+transform = Transform( 1, 0, 0, 0, 0.321152, 0.947028, 0, -0.947028, 0.321152, 0, 37.4474, 6.49154 )
+keep_aspect = 1
+cull_mask = 1048575
+environment = null
+h_offset = 0.0
+v_offset = 0.0
+doppler_tracking = 0
+projection = 0
+current = false
+fov = 40.1
+size = 1.0
+near = 0.05
+far = 100.0
+_sections_unfolded = [ "Transform" ]
+
+[node name="GoldTextureRect" type="TextureRect" parent="." index="2"]
+
+editor/display_folded = true
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 40.0
+margin_bottom = 40.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+stretch_mode = 0
+
+[node name="GoldLabel" type="Label" parent="GoldTextureRect" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 40.0
+margin_bottom = 14.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+text = "Gold: 0.0"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="CarSpatial" type="Spatial" parent="." index="3"]
+
+editor/display_folded = true
+
+[node name="CarCube" parent="CarSpatial" index="0" instance=ExtResource( 2 )]
+
+_sections_unfolded = [ "Transform" ]
+
+[node name="OmniLightCar1" type="OmniLight" parent="CarSpatial" index="1"]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.09203, 0 )
+layers = 1
+light_color = Color( 1, 1, 1, 1 )
+light_energy = 0.3
+light_indirect_energy = 1.0
+light_negative = false
+light_specular = 0.5
+light_bake_mode = 1
+light_cull_mask = -1
+shadow_enabled = false
+shadow_color = Color( 0, 0, 0, 1 )
+shadow_bias = 0.15
+shadow_contact = 0.0
+shadow_reverse_cull_face = false
+editor_only = false
+omni_range = 5.0
+omni_attenuation = 1.0
+omni_shadow_mode = 1
+omni_shadow_detail = 1
+_sections_unfolded = [ "Light" ]
+
+[node name="RewardSpatial" type="Spatial" parent="." index="4"]
+
+editor/display_folded = true
+transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -18.268, 0, 0 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="RewardBasicCube" parent="RewardSpatial" index="0" instance=ExtResource( 2 )]
+
+[node name="RewardOmniLight" type="OmniLight" parent="RewardSpatial" index="1"]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3923, 0 )
+layers = 1
+light_color = Color( 1, 0.46875, 0, 1 )
+light_energy = 0.25
+light_indirect_energy = 1.0
+light_negative = false
+light_specular = 0.5
+light_bake_mode = 1
+light_cull_mask = -1
+shadow_enabled = false
+shadow_color = Color( 0, 0, 0, 1 )
+shadow_bias = 0.15
+shadow_contact = 0.0
+shadow_reverse_cull_face = false
+editor_only = false
+omni_range = 5.0
+omni_attenuation = 1.0
+omni_shadow_mode = 1
+omni_shadow_detail = 1
+_sections_unfolded = [ "Light" ]
+
+
