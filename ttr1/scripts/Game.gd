@@ -17,10 +17,14 @@ onready var town_hall_ui_spatial = $TownHallUISpatial
 onready var th_ui_area = $TownHallUISpatial/TownHallUICube/Area
 onready var th_ui_area_hit = false
 onready var yellow_cube_spatial = $YellowCubeSpatial
+onready var th_building = false
+onready var yellow_cube_scene = load("res://scenes/YellowCube.tscn")
+onready var building = null
 
 func _ready():
 	randomize()
 	_move_reward()
+	building = yellow_cube_scene.instance()
 	pass
 
 func _process(delta):
@@ -58,8 +62,28 @@ func _process(delta):
 		var space_state = ground_top.get_world().direct_space_state
 		var hit = space_state.intersect_ray(from, to)
 		if hit.size() != 0:
-			yellow_cube_spatial.set_translation(Vector3(hit.position.x, yellow_cube_spatial.get_translation().y, hit.position.z))
+			#yellow_cube_spatial.set_translation(Vector3(hit.position.x, yellow_cube_spatial.get_translation().y, hit.position.z))
+			#building = yellow_cube_scene.instance()
+			#yellow_cube_spatial.set_translation(Vector3(hit.position.x, 0, hit.position.z))
+			building.set_translation(Vector3(hit.position.x, 0, hit.position.z))
+			self.add_child(building)
+			th_building = true
+			th_ui_area_hit = false
 	pass
+	if Input.is_action_just_pressed("Q"):
+		# place the building
+		if th_building:
+			th_building = false
+			pass
+		pass
+	if Input.is_action_just_pressed("E"):
+		# cancel building placement
+		if th_building:
+			th_building = false
+			building.queue_free()
+			building = null
+			pass
+		pass
 	
 func _move_reward():
 	var x_range = rand_range(-21.7, 21.7)
