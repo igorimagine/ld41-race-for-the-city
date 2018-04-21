@@ -79,11 +79,13 @@ func _process(delta):
 #				self.add_child(building)
 #				town_halls.append(building)
 			#if (building_number == 0 || (building_number == last_building_number)):
+				#
+				#dobra je translacija, ali ne smijem spawnat buidling
 			if building_number == (last_building_number + 1):
 				building = yellow_cube_scene.instance()
 				self.add_child(building)
 				town_halls.append(building)
-				#last_building_number += 1
+				last_building_number += 1
 			building.set_translation(Vector3(hit.position.x, 0, hit.position.z))
 			th_building = true
 			pass
@@ -93,7 +95,7 @@ func _process(delta):
 		if th_building:
 			th_building = false
 			th_ui_area_hit = false
-			last_building_number += 1
+			#last_building_number += 1
 			#th_building_placed = true ???
 			pass
 		pass
