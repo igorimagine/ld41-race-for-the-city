@@ -22,6 +22,13 @@ onready var last_building_number = 0
 onready var building_number = 0
 onready var town_halls = []
 
+onready var house_ui_area = $HouseUISpatial/HouseUICube/Area
+onready var house_ui_area_hit = false
+onready var house_must_be_built = false
+onready var last_house_building_number = 0
+onready var house_building_number = 0
+onready var houses = []
+
 func _ready():
 	randomize()
 	_move_reward()
@@ -39,12 +46,18 @@ func _do_lmb():
 		if hit.collider_id == th_ui_area.get_instance_id():
 			th_ui_area_hit = true
 			building_number += 1
+		if hit.collider_id == house_ui_area.get_instance_id():
+			house_ui_area_hit = true
+			house_building_number += 1
 
 func _process(delta):
 	reward_delay -= 1
 	var building = null
 	if (last_building_number > 0):
 		building = town_halls[town_halls.size() - 1]
+	var house_building = null
+	if (last_house_building_number > 0):
+		house_building = houses[-1]
 	if car_area.overlaps_area(road_top_area):
 		gold += 0.1
 		pass
@@ -74,13 +87,6 @@ func _process(delta):
 		var space_state = ground_top.get_world().direct_space_state
 		var hit = space_state.intersect_ray(from, to)
 		if hit.size() != 0:
-			#if building == null:
-#				building = yellow_cube_scene.instance()
-#				self.add_child(building)
-#				town_halls.append(building)
-			#if (building_number == 0 || (building_number == last_building_number)):
-				#
-				#dobra je translacija, ali ne smijem spawnat buidling
 			if building_number == (last_building_number + 1):
 				building = yellow_cube_scene.instance()
 				self.add_child(building)
@@ -88,17 +94,32 @@ func _process(delta):
 				last_building_number += 1
 			building.set_translation(Vector3(hit.position.x, 0, hit.position.z))
 			th_building = true
-			pass
+	pass
+	if house_ui_area_hit:
+		var mouse_pos = get_viewport().get_mouse_position()
+		var ray_origin = main_camera.project_ray_origin(mouse_pos)
+		var ray_direction = main_camera.project_ray_normal(mouse_pos)
+		var from = ray_origin
+		var to = ray_origin + ray_direction * 1000.0
+		var space_state = ground_top.get_world().direct_space_state
+		var hit = space_state.intersect_ray(from, to)
+		if hit.size() != 0:
+			if house_building_number == (last_house_building_number + 1):
+				house_building = yellow_cube_scene.instance()
+				self.add_child(house_building)
+				houses.append(house_building)
+				last_house_building_number += 1
+			house_building.set_translation(Vector3(hit.position.x, 0, hit.position.z))
+			house_must_be_built = true
 	pass
 	if Input.is_action_just_pressed("Q"):
 		# place the building
 		if th_building:
 			th_building = false
 			th_ui_area_hit = false
-			#last_building_number += 1
-			#th_building_placed = true ???
-			pass
-		pass
+		if house_must_be_built:
+			house_must_be_built = false
+			house_ui_area_hit = false
 	if Input.is_action_just_pressed("E"):
 		# cancel building placement
 		if th_building:
@@ -106,8 +127,11 @@ func _process(delta):
 			th_ui_area_hit = false
 			building.queue_free()
 			building = null
-			pass
-		pass
+		if house_must_be_built:
+			house_must_be_built = false
+			house_ui_area_hit = false
+			house_building.queue_free()
+			house_building = null
 	
 func _move_reward():
 	var x_range = rand_range(-21.7, 21.7)
