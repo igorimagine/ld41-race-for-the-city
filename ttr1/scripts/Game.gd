@@ -22,12 +22,12 @@ onready var last_building_number = 0
 onready var building_number = 0
 onready var town_halls = []
 
-onready var house_ui_area = $HouseUISpatial/HouseUICube/Area
-onready var house_ui_area_hit = false
-onready var house_must_be_built = false
-onready var last_house_building_number = 0
-onready var house_building_number = 0
-onready var houses = []
+#onready var house_ui_area = $HouseUISpatial/HouseUICube/Area
+#onready var house_ui_area_hit = false
+#onready var house_must_be_built = false
+#onready var last_house_building_number = 0
+#onready var house_building_number = 0
+#onready var houses = []
 
 onready var houseBuildableEntity = null
 
@@ -38,12 +38,52 @@ class BuildableEntity:
 	var last_entity_building_number = 0
 	var entity_building_number = 0
 	var entities = []
+	var entity_building = null
+	var scene_instance = null
 	
 	func do_lmb_logic(hit):
 		if hit.size() != 0:
 			if hit.collider_id == entity_ui_area.get_instance_id():
 				entity_ui_area_hit = true
 				entity_building_number += 1
+				
+	func process_beginning():
+		entity_building = null
+		if (last_entity_building_number > 0):
+			entity_building = entities[-1]
+			
+	func process_middle(mouse_position, main_camera, ground_top, add_to_node):
+		if entity_ui_area_hit:
+			#var mouse_pos = get_viewport().get_mouse_position()
+			# change this!
+			var mouse_pos = mouse_position
+			var ray_origin = main_camera.project_ray_origin(mouse_pos)
+			var ray_direction = main_camera.project_ray_normal(mouse_pos)
+			var from = ray_origin
+			var to = ray_origin + ray_direction * 1000.0
+			var space_state = ground_top.get_world().direct_space_state
+			var hit = space_state.intersect_ray(from, to)
+			if hit.size() != 0:
+				if entity_building_number == (last_entity_building_number + 1):
+					#entity_building = scene_instance
+					entity_building = scene_instance.instance()
+					add_to_node.add_child(entity_building)
+					entities.append(entity_building)
+					last_entity_building_number += 1
+				entity_building.set_translation(Vector3(hit.position.x, 0, hit.position.z))
+				entity_must_be_built = true
+	
+	func input_add_logic():
+		if entity_must_be_built:
+			entity_must_be_built = false
+			entity_ui_area_hit = false
+	
+	func input_remove_logic():
+		if entity_must_be_built:
+			entity_must_be_built = false
+			entity_ui_area_hit = false
+			entity_building.queue_free()
+			entity_building = null
 
 func _ready():
 	randomize()
@@ -55,6 +95,9 @@ func _ready():
 	houseBuildableEntity.last_entity_building_number = 0
 	houseBuildableEntity.entity_building_number = 0
 	houseBuildableEntity.entities = []
+	houseBuildableEntity.entity_building = null
+	#houseBuildableEntity.scene_instance = yellow_cube_scene.instance()
+	houseBuildableEntity.scene_instance = yellow_cube_scene
 	pass
 
 func _do_lmb():
@@ -79,9 +122,10 @@ func _process(delta):
 	var building = null
 	if (last_building_number > 0):
 		building = town_halls[town_halls.size() - 1]
-	var house_building = null
-	if (last_house_building_number > 0):
-		house_building = houses[-1]
+#	var house_building = null
+#	if (last_house_building_number > 0):
+#		house_building = houses[-1]
+	houseBuildableEntity.process_beginning()
 	if car_area.overlaps_area(road_top_area):
 		gold += 0.1
 		pass
@@ -119,31 +163,33 @@ func _process(delta):
 			building.set_translation(Vector3(hit.position.x, 0, hit.position.z))
 			th_building = true
 	pass
-	if house_ui_area_hit:
-		var mouse_pos = get_viewport().get_mouse_position()
-		var ray_origin = main_camera.project_ray_origin(mouse_pos)
-		var ray_direction = main_camera.project_ray_normal(mouse_pos)
-		var from = ray_origin
-		var to = ray_origin + ray_direction * 1000.0
-		var space_state = ground_top.get_world().direct_space_state
-		var hit = space_state.intersect_ray(from, to)
-		if hit.size() != 0:
-			if house_building_number == (last_house_building_number + 1):
-				house_building = yellow_cube_scene.instance()
-				self.add_child(house_building)
-				houses.append(house_building)
-				last_house_building_number += 1
-			house_building.set_translation(Vector3(hit.position.x, 0, hit.position.z))
-			house_must_be_built = true
-	pass
+#	if house_ui_area_hit:
+#		var mouse_pos = get_viewport().get_mouse_position()
+#		var ray_origin = main_camera.project_ray_origin(mouse_pos)
+#		var ray_direction = main_camera.project_ray_normal(mouse_pos)
+#		var from = ray_origin
+#		var to = ray_origin + ray_direction * 1000.0
+#		var space_state = ground_top.get_world().direct_space_state
+#		var hit = space_state.intersect_ray(from, to)
+#		if hit.size() != 0:
+#			if house_building_number == (last_house_building_number + 1):
+#				house_building = yellow_cube_scene.instance()
+#				self.add_child(house_building)
+#				houses.append(house_building)
+#				last_house_building_number += 1
+#			house_building.set_translation(Vector3(hit.position.x, 0, hit.position.z))
+#			house_must_be_built = true
+#	pass
+	houseBuildableEntity.process_middle(get_viewport().get_mouse_position(), main_camera, ground_top, self)
 	if Input.is_action_just_pressed("Q"):
 		# place the building
 		if th_building:
 			th_building = false
 			th_ui_area_hit = false
-		if house_must_be_built:
-			house_must_be_built = false
-			house_ui_area_hit = false
+#		if house_must_be_built:
+#			house_must_be_built = false
+#			house_ui_area_hit = false
+		houseBuildableEntity.input_add_logic()
 	if Input.is_action_just_pressed("E"):
 		# cancel building placement
 		if th_building:
@@ -151,11 +197,12 @@ func _process(delta):
 			th_ui_area_hit = false
 			building.queue_free()
 			building = null
-		if house_must_be_built:
-			house_must_be_built = false
-			house_ui_area_hit = false
-			house_building.queue_free()
-			house_building = null
+#		if house_must_be_built:
+#			house_must_be_built = false
+#			house_ui_area_hit = false
+#			house_building.queue_free()
+#			house_building = null
+		houseBuildableEntity.input_remove_logic()
 	
 func _move_reward():
 	var x_range = rand_range(-21.7, 21.7)
