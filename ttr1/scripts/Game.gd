@@ -14,6 +14,7 @@ onready var main_camera = $MainCamera
 onready var ground_top = $GroundTop
 onready var yellow_cube_spatial = $YellowCubeSpatial
 onready var yellow_cube_scene = load("res://scenes/YellowCube.tscn")
+onready var basic_house_scene = load("res://scenes/BasicHouse3.tscn")
 onready var no_gold_label = $NoGoldErrMsgTextureRect/NoGoldErrMsgLabel
 
 onready var townhallBuildableEntity = null
@@ -93,8 +94,9 @@ func _ready():
 	townhallBuildableEntity.gold_price = 125
 	houseBuildableEntity = BuildableEntity.new()
 	houseBuildableEntity.entity_ui_area = $HouseUISpatial/HouseUICube/Area
-	houseBuildableEntity.scene_instance = yellow_cube_scene
+	houseBuildableEntity.scene_instance = basic_house_scene
 	houseBuildableEntity.gold_price = 75
+	#houseBuildableEntity.gold_price = 1
 	pass
 
 func _do_lmb():
