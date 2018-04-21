@@ -12,7 +12,12 @@ script = ExtResource( 1 )
 transform = Transform( 23.7, 0, 0, 0, 0.2, 0, 0, 0, 5.5, 0.22741, -0.851607, 0.66008 )
 _sections_unfolded = [ "Transform" ]
 
-[node name="MainCamera" type="Camera" parent="." index="1"]
+[node name="GroundTop" parent="." index="1" instance=ExtResource( 2 )]
+
+transform = Transform( 25, 0, 0, 0, 0.2, 0, 0, 0, 8, -0.160318, -0.851607, -14.4794 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="MainCamera" type="Camera" parent="." index="2"]
 
 transform = Transform( 1, 0, 0, 0, 0.321152, 0.947028, 0, -0.947028, 0.321152, 0, 37.4474, 6.49154 )
 keep_aspect = 1
@@ -29,7 +34,7 @@ near = 0.05
 far = 100.0
 _sections_unfolded = [ "Transform" ]
 
-[node name="GoldTextureRect" type="TextureRect" parent="." index="2"]
+[node name="GoldTextureRect" type="TextureRect" parent="." index="3"]
 
 editor/display_folded = true
 anchor_left = 0.0
@@ -65,7 +70,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="CarSpatial" type="Spatial" parent="." index="3"]
+[node name="CarSpatial" type="Spatial" parent="." index="4"]
 
 editor/display_folded = true
 
@@ -96,7 +101,7 @@ omni_shadow_mode = 1
 omni_shadow_detail = 1
 _sections_unfolded = [ "Light" ]
 
-[node name="RewardSpatial" type="Spatial" parent="." index="4"]
+[node name="RewardSpatial" type="Spatial" parent="." index="5"]
 
 editor/display_folded = true
 transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -18.268, 0, 0 )
@@ -126,5 +131,34 @@ omni_attenuation = 1.0
 omni_shadow_mode = 1
 omni_shadow_detail = 1
 _sections_unfolded = [ "Light" ]
+
+[node name="TownHallUISpatial" type="Spatial" parent="." index="6"]
+
+transform = Transform( 0.33, 0, 0, 0, 0.33, 0, 0, 0, 0.33, -25.218, 0, -19.7852 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="TownHallUICube" parent="TownHallUISpatial" index="0" instance=ExtResource( 2 )]
+
+[node name="TownHallUIOmniLight" type="OmniLight" parent="TownHallUISpatial" index="1"]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05151, 0 )
+layers = 1
+light_color = Color( 1, 1, 1, 1 )
+light_energy = 1.0
+light_indirect_energy = 1.0
+light_negative = false
+light_specular = 0.5
+light_bake_mode = 1
+light_cull_mask = -1
+shadow_enabled = false
+shadow_color = Color( 0, 0, 0, 1 )
+shadow_bias = 0.15
+shadow_contact = 0.0
+shadow_reverse_cull_face = false
+editor_only = false
+omni_range = 5.0
+omni_attenuation = 1.0
+omni_shadow_mode = 1
+omni_shadow_detail = 1
 
 

@@ -11,6 +11,10 @@ onready var gold = 0.0
 onready var speed = 20.0
 onready var reward_delay_default = 15 #frames
 onready var reward_delay = reward_delay_default
+onready var main_camera = $MainCamera
+onready var ground_top = $GroundTop
+onready var town_hall_ui_spatial = $TownHallUISpatial
+onready var th_ui_area = $TownHallUISpatial/TownHallUICube/Area
 
 func _ready():
 	randomize()
@@ -38,6 +42,8 @@ func _process(delta):
 		car_spatial.translate(Vector3(0, 0, speed * delta))
 	if Input.is_action_pressed("W"):
 		car_spatial.translate(Vector3(0, 0, -speed * delta))
+	if Input.is_action_just_pressed("LMB"):
+		_do_lmb()
 	pass
 	
 func _move_reward():
@@ -45,3 +51,21 @@ func _move_reward():
 	var z_range = rand_range(-4.0, 5.1)
 	reward_spatial.set_translation(Vector3(x_range, reward_spatial.translation.y, z_range))
 	pass
+	
+func _do_lmb():
+	var mouse_pos = get_viewport().get_mouse_position()
+	var ray_origin = main_camera.project_ray_origin(mouse_pos)
+	var ray_direction = main_camera.project_ray_normal(mouse_pos)
+	var from = ray_origin
+	var to = ray_origin + ray_direction * 1000.0
+	var space_state = ground_top.get_world().direct_space_state
+	var hit = space_state.intersect_ray(from, to)
+	if hit.size() != 0:
+		#print(hit.collider_id)
+		#if hit.collider_id == town_hall_ui_spatial.get_instance_id():
+		if hit.collider_id == th_ui_area.get_instance_id():
+			prints("th")
+		else:
+			prints("hci", hit.collider_id)
+	else:
+		prints("h0")
