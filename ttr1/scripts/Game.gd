@@ -15,6 +15,8 @@ onready var main_camera = $MainCamera
 onready var ground_top = $GroundTop
 onready var town_hall_ui_spatial = $TownHallUISpatial
 onready var th_ui_area = $TownHallUISpatial/TownHallUICube/Area
+onready var th_ui_area_hit = false
+onready var yellow_cube_spatial = $YellowCubeSpatial
 
 func _ready():
 	randomize()
@@ -44,6 +46,19 @@ func _process(delta):
 		car_spatial.translate(Vector3(0, 0, -speed * delta))
 	if Input.is_action_just_pressed("LMB"):
 		_do_lmb()
+	if th_ui_area_hit:
+#		var mouse_pos = get_viewport().get_mouse_position()
+#		prints("trans", yellow_cube_spatial.get_translation())
+#		yellow_cube_spatial.set_translation(Vector3(mouse_pos.x, yellow_cube_spatial.get_translation().y, mouse_pos.y)) #ovo zadnje je z
+		var mouse_pos = get_viewport().get_mouse_position()
+		var ray_origin = main_camera.project_ray_origin(mouse_pos)
+		var ray_direction = main_camera.project_ray_normal(mouse_pos)
+		var from = ray_origin
+		var to = ray_origin + ray_direction * 1000.0
+		var space_state = ground_top.get_world().direct_space_state
+		var hit = space_state.intersect_ray(from, to)
+		if hit.size() != 0:
+			yellow_cube_spatial.set_translation(Vector3(hit.position.x, yellow_cube_spatial.get_translation().y, hit.position.z))
 	pass
 	
 func _move_reward():
@@ -61,11 +76,5 @@ func _do_lmb():
 	var space_state = ground_top.get_world().direct_space_state
 	var hit = space_state.intersect_ray(from, to)
 	if hit.size() != 0:
-		#print(hit.collider_id)
-		#if hit.collider_id == town_hall_ui_spatial.get_instance_id():
 		if hit.collider_id == th_ui_area.get_instance_id():
-			prints("th")
-		else:
-			prints("hci", hit.collider_id)
-	else:
-		prints("h0")
+			th_ui_area_hit = true

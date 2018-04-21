@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://scripts/Game.gd" type="Script" id=1]
 [ext_resource path="res://scenes/BasicCube.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/YellowCube.tscn" type="PackedScene" id=3]
 
 [node name="Game" type="Node" index="0"]
 
@@ -134,6 +135,7 @@ _sections_unfolded = [ "Light" ]
 
 [node name="TownHallUISpatial" type="Spatial" parent="." index="6"]
 
+editor/display_folded = true
 transform = Transform( 0.33, 0, 0, 0, 0.33, 0, 0, 0, 0.33, -25.218, 0, -19.7852 )
 _sections_unfolded = [ "Transform" ]
 
@@ -142,6 +144,37 @@ _sections_unfolded = [ "Transform" ]
 [node name="TownHallUIOmniLight" type="OmniLight" parent="TownHallUISpatial" index="1"]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05151, 0 )
+layers = 1
+light_color = Color( 1, 1, 1, 1 )
+light_energy = 1.0
+light_indirect_energy = 1.0
+light_negative = false
+light_specular = 0.5
+light_bake_mode = 1
+light_cull_mask = -1
+shadow_enabled = false
+shadow_color = Color( 0, 0, 0, 1 )
+shadow_bias = 0.15
+shadow_contact = 0.0
+shadow_reverse_cull_face = false
+editor_only = false
+omni_range = 5.0
+omni_attenuation = 1.0
+omni_shadow_mode = 1
+omni_shadow_detail = 1
+
+[node name="YellowCubeSpatial" type="Spatial" parent="." index="7"]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 18.2062, 0, -17.0712 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="YellowCube" parent="YellowCubeSpatial" index="0" instance=ExtResource( 3 )]
+
+_sections_unfolded = [ "Transform" ]
+
+[node name="YellowCubeOmniLight" type="OmniLight" parent="YellowCubeSpatial" index="1"]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.78067, 0 )
 layers = 1
 light_color = Color( 1, 1, 1, 1 )
 light_energy = 1.0
