@@ -29,9 +29,32 @@ onready var last_house_building_number = 0
 onready var house_building_number = 0
 onready var houses = []
 
+onready var houseBuildableEntity = null
+
+class BuildableEntity:
+	var entity_ui_area = null
+	var entity_ui_area_hit = false
+	var entity_must_be_built = false
+	var last_entity_building_number = 0
+	var entity_building_number = 0
+	var entities = []
+	
+	func do_lmb_logic(hit):
+		if hit.size() != 0:
+			if hit.collider_id == entity_ui_area.get_instance_id():
+				entity_ui_area_hit = true
+				entity_building_number += 1
+
 func _ready():
 	randomize()
 	_move_reward()
+	houseBuildableEntity = BuildableEntity.new()
+	houseBuildableEntity.entity_ui_area = $HouseUISpatial/HouseUICube/Area
+	houseBuildableEntity.entity_ui_area_hit = false
+	houseBuildableEntity.entity_must_be_built = false
+	houseBuildableEntity.last_entity_building_number = 0
+	houseBuildableEntity.entity_building_number = 0
+	houseBuildableEntity.entities = []
 	pass
 
 func _do_lmb():
@@ -46,9 +69,10 @@ func _do_lmb():
 		if hit.collider_id == th_ui_area.get_instance_id():
 			th_ui_area_hit = true
 			building_number += 1
-		if hit.collider_id == house_ui_area.get_instance_id():
-			house_ui_area_hit = true
-			house_building_number += 1
+#		if hit.collider_id == house_ui_area.get_instance_id():
+#			house_ui_area_hit = true
+#			house_building_number += 1
+	houseBuildableEntity.do_lmb_logic(hit)
 
 func _process(delta):
 	reward_delay -= 1
