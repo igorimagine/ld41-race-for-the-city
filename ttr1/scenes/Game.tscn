@@ -165,7 +165,7 @@ omni_shadow_detail = 1
 
 [node name="YellowCubeSpatial" type="Spatial" parent="." index="7"]
 
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 18.2062, 0, -17.0712 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 68.2062, 0, -17.0712 )
 _sections_unfolded = [ "Transform" ]
 
 [node name="YellowCube" parent="YellowCubeSpatial" index="0" instance=ExtResource( 3 )]
