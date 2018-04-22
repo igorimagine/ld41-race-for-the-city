@@ -14,15 +14,19 @@ onready var main_camera = $MainCamera
 onready var ground_top = $GroundTop
 onready var yellow_cube_spatial = $YellowCubeSpatial
 #onready var yellow_cube_scene = load("res://scenes/YellowCube.tscn")
+onready var no_gold_label = $NoGoldErrMsgTextureRect/NoGoldErrMsgLabel
+onready var city_tutorial_label = $CityTutorialMsgTextureRect2/CityTutorialMsgLabel
 onready var basic_house_scene = load("res://scenes/BasicHouse3.tscn")
 onready var basic_town_hall_scene = load("res://scenes/BasicTownHall.tscn")
 onready var basic_tree_scene = load("res://scenes/BasicTree1.tscn")
-onready var no_gold_label = $NoGoldErrMsgTextureRect/NoGoldErrMsgLabel
-onready var city_tutorial_label = $CityTutorialMsgTextureRect2/CityTutorialMsgLabel
+onready var basic_bench_scene = load("res://scenes/BasicBench1.tscn")
+
+onready var test_prices = false
 
 onready var townhallBuildableEntity = null
 onready var houseBuildableEntity = null
 onready var treeBuildableEntity = null
+onready var benchBuildableEntity = null
 
 func _ready():
 	randomize()
@@ -31,17 +35,25 @@ func _ready():
 	townhallBuildableEntity = BuildableEntity.new()
 	townhallBuildableEntity.entity_ui_area = $TownHallUISpatial/TownHallUICube/Area
 	townhallBuildableEntity.scene_instance = basic_town_hall_scene
-	townhallBuildableEntity.gold_price = 125
+	townhallBuildableEntity.gold_price = 250
 	houseBuildableEntity = BuildableEntity.new()
 	houseBuildableEntity.entity_ui_area = $HouseUISpatial/HouseUICube/Area
 	houseBuildableEntity.scene_instance = basic_house_scene
-	houseBuildableEntity.gold_price = 75
-	#houseBuildableEntity.gold_price = 1
+	houseBuildableEntity.gold_price = 150
 	treeBuildableEntity = BuildableEntity.new()
 	treeBuildableEntity.entity_ui_area = $TreeUISpatial/TreeUICube/Area
 	treeBuildableEntity.scene_instance = basic_tree_scene
-	treeBuildableEntity.gold_price = 25
-	city_tutorial_label.text = "Build a city with gold. Town hall: " + str(townhallBuildableEntity.gold_price) + "g, House: " + str(houseBuildableEntity.gold_price) + "g, Tree: " + str(treeBuildableEntity.gold_price)
+	treeBuildableEntity.gold_price = 65
+	benchBuildableEntity = BuildableEntity.new()
+	benchBuildableEntity.entity_ui_area = $BenchUISpatial/BenchUICube/Area
+	benchBuildableEntity.scene_instance = basic_bench_scene
+	benchBuildableEntity.gold_price = 65
+	if test_prices:
+		townhallBuildableEntity.gold_price = 1
+		houseBuildableEntity.gold_price = 1
+		treeBuildableEntity.gold_price = 1
+		benchBuildableEntity.gold_price = 1
+	city_tutorial_label.text = "Build a city with gold. Town hall: " + str(townhallBuildableEntity.gold_price) + "g, House: " + str(houseBuildableEntity.gold_price) + "g, Tree: " + str(treeBuildableEntity.gold_price) + "g, Bench: " + str(benchBuildableEntity.gold_price) + "g"
 	pass
 
 class BuildableEntity:
@@ -119,12 +131,14 @@ func _do_lmb():
 	townhallBuildableEntity.do_lmb_logic(hit)
 	houseBuildableEntity.do_lmb_logic(hit)
 	treeBuildableEntity.do_lmb_logic(hit)
+	benchBuildableEntity.do_lmb_logic(hit)
 
 func _process(delta):
 	reward_delay -= 1
 	townhallBuildableEntity.process_beginning()
 	houseBuildableEntity.process_beginning()
 	treeBuildableEntity.process_beginning()
+	benchBuildableEntity.process_beginning()
 	if car_area.overlaps_area(road_top_area):
 		gold += 0.1
 		pass
@@ -148,16 +162,19 @@ func _process(delta):
 	townhallBuildableEntity.process_middle(get_viewport().get_mouse_position(), main_camera, ground_top, self)
 	houseBuildableEntity.process_middle(get_viewport().get_mouse_position(), main_camera, ground_top, self)
 	treeBuildableEntity.process_middle(get_viewport().get_mouse_position(), main_camera, ground_top, self)
+	benchBuildableEntity.process_middle(get_viewport().get_mouse_position(), main_camera, ground_top, self)
 	if Input.is_action_just_pressed("Q"):
 		# place the building
 		townhallBuildableEntity.input_add_logic(self)
 		houseBuildableEntity.input_add_logic(self)
 		treeBuildableEntity.input_add_logic(self)
+		benchBuildableEntity.input_add_logic(self)
 	if Input.is_action_just_pressed("E"):
 		# cancel building placement
 		townhallBuildableEntity.input_remove_logic()
 		houseBuildableEntity.input_remove_logic()
 		treeBuildableEntity.input_remove_logic()
+		benchBuildableEntity.input_remove_logic()
 	
 func _move_reward():
 	var x_range = rand_range(-21.7, 21.7)

@@ -375,7 +375,36 @@ omni_attenuation = 1.0
 omni_shadow_mode = 1
 omni_shadow_detail = 1
 
-[node name="YellowCubeSpatial" type="Spatial" parent="." index="13"]
+[node name="BenchUISpatial" type="Spatial" parent="." index="13"]
+
+transform = Transform( 0.33, 0, 0, 0, 0.33, 0, 0, 0, 0.33, -25.218, 0, -13.1925 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="BenchUICube" parent="BenchUISpatial" index="0" instance=ExtResource( 2 )]
+
+[node name="BenchUIOmniLight" type="OmniLight" parent="BenchUISpatial" index="1"]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05151, 0 )
+layers = 1
+light_color = Color( 1, 1, 1, 1 )
+light_energy = 1.0
+light_indirect_energy = 1.0
+light_negative = false
+light_specular = 0.5
+light_bake_mode = 1
+light_cull_mask = -1
+shadow_enabled = false
+shadow_color = Color( 0, 0, 0, 1 )
+shadow_bias = 0.15
+shadow_contact = 0.0
+shadow_reverse_cull_face = false
+editor_only = false
+omni_range = 5.0
+omni_attenuation = 1.0
+omni_shadow_mode = 1
+omni_shadow_detail = 1
+
+[node name="YellowCubeSpatial" type="Spatial" parent="." index="14"]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 68.2062, 0, -17.0712 )
 _sections_unfolded = [ "Transform" ]
@@ -406,12 +435,12 @@ omni_attenuation = 1.0
 omni_shadow_mode = 1
 omni_shadow_detail = 1
 
-[node name="BasicTree1" parent="." index="14" instance=ExtResource( 4 )]
+[node name="BasicTree1" parent="." index="15" instance=ExtResource( 4 )]
 
 transform = Transform( 0.254988, 0, -0.209478, 0, 0.33, 0, 0.209478, 0, 0.254988, 0, 0, -11.5492 )
 visible = false
 
-[node name="BasicBench1" parent="." index="15" instance=ExtResource( 5 )]
+[node name="BasicBench1" parent="." index="16" instance=ExtResource( 5 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6194, 0, -13.4804 )
 visible = false

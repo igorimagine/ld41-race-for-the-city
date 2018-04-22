@@ -6,12 +6,12 @@
 
 [node name="Cube" parent="." index="0"]
 
-transform = Transform( 0.193183, 0, -0.546756, 0, 0.25, 0, 0.158683, 0, 0.665632, 0, 1.01035, 0 )
+transform = Transform( 0.193183, 0, -0.546756, 0, 0.25, 0, 0.158683, 0, 0.665632, 0, 0.212587, 0 )
 _sections_unfolded = [ "Transform" ]
 
 [node name="BBenchOmniLight" type="OmniLight" parent="." index="2"]
 
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.582784, 1.48306, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0659114, 0.726779, 0.332926 )
 layers = 1
 light_color = Color( 1, 1, 1, 1 )
 light_energy = 1.0
@@ -26,7 +26,7 @@ shadow_bias = 0.15
 shadow_contact = 0.0
 shadow_reverse_cull_face = false
 editor_only = false
-omni_range = 2.3
+omni_range = 0.8
 omni_attenuation = 1.0
 omni_shadow_mode = 1
 omni_shadow_detail = 1
