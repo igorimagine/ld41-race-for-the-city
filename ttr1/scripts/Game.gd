@@ -16,11 +16,33 @@ onready var yellow_cube_spatial = $YellowCubeSpatial
 #onready var yellow_cube_scene = load("res://scenes/YellowCube.tscn")
 onready var basic_house_scene = load("res://scenes/BasicHouse3.tscn")
 onready var basic_town_hall_scene = load("res://scenes/BasicTownHall.tscn")
+onready var basic_tree_scene = load("res://scenes/BasicTree1.tscn")
 onready var no_gold_label = $NoGoldErrMsgTextureRect/NoGoldErrMsgLabel
 onready var city_tutorial_label = $CityTutorialMsgTextureRect2/CityTutorialMsgLabel
 
 onready var townhallBuildableEntity = null
 onready var houseBuildableEntity = null
+onready var treeBuildableEntity = null
+
+func _ready():
+	randomize()
+	_move_reward()
+	no_gold_label.text = ""
+	townhallBuildableEntity = BuildableEntity.new()
+	townhallBuildableEntity.entity_ui_area = $TownHallUISpatial/TownHallUICube/Area
+	townhallBuildableEntity.scene_instance = basic_town_hall_scene
+	townhallBuildableEntity.gold_price = 125
+	houseBuildableEntity = BuildableEntity.new()
+	houseBuildableEntity.entity_ui_area = $HouseUISpatial/HouseUICube/Area
+	houseBuildableEntity.scene_instance = basic_house_scene
+	houseBuildableEntity.gold_price = 75
+	#houseBuildableEntity.gold_price = 1
+	treeBuildableEntity = BuildableEntity.new()
+	treeBuildableEntity.entity_ui_area = $TreeUISpatial/TreeUICube/Area
+	treeBuildableEntity.scene_instance = basic_tree_scene
+	treeBuildableEntity.gold_price = 25
+	city_tutorial_label.text = "Build a city with gold. Town hall: " + str(townhallBuildableEntity.gold_price) + "g, House: " + str(houseBuildableEntity.gold_price) + "g, Tree: " + str(treeBuildableEntity.gold_price)
+	pass
 
 class BuildableEntity:
 	var entity_ui_area = null
@@ -86,22 +108,6 @@ class BuildableEntity:
 			entity_building.queue_free()
 			entity_building = null
 
-func _ready():
-	randomize()
-	_move_reward()
-	no_gold_label.text = ""
-	townhallBuildableEntity = BuildableEntity.new()
-	townhallBuildableEntity.entity_ui_area = $TownHallUISpatial/TownHallUICube/Area
-	townhallBuildableEntity.scene_instance = basic_town_hall_scene
-	townhallBuildableEntity.gold_price = 125
-	houseBuildableEntity = BuildableEntity.new()
-	houseBuildableEntity.entity_ui_area = $HouseUISpatial/HouseUICube/Area
-	houseBuildableEntity.scene_instance = basic_house_scene
-	houseBuildableEntity.gold_price = 75
-	#houseBuildableEntity.gold_price = 1
-	city_tutorial_label.text = "Build a city with gold. Town hall: " + str(townhallBuildableEntity.gold_price) + "g, House: " + str(houseBuildableEntity.gold_price) + "g"
-	pass
-
 func _do_lmb():
 	var mouse_pos = get_viewport().get_mouse_position()
 	var ray_origin = main_camera.project_ray_origin(mouse_pos)
@@ -112,11 +118,13 @@ func _do_lmb():
 	var hit = space_state.intersect_ray(from, to)
 	townhallBuildableEntity.do_lmb_logic(hit)
 	houseBuildableEntity.do_lmb_logic(hit)
+	treeBuildableEntity.do_lmb_logic(hit)
 
 func _process(delta):
 	reward_delay -= 1
 	townhallBuildableEntity.process_beginning()
 	houseBuildableEntity.process_beginning()
+	treeBuildableEntity.process_beginning()
 	if car_area.overlaps_area(road_top_area):
 		gold += 0.1
 		pass
@@ -139,14 +147,17 @@ func _process(delta):
 		_do_lmb()
 	townhallBuildableEntity.process_middle(get_viewport().get_mouse_position(), main_camera, ground_top, self)
 	houseBuildableEntity.process_middle(get_viewport().get_mouse_position(), main_camera, ground_top, self)
+	treeBuildableEntity.process_middle(get_viewport().get_mouse_position(), main_camera, ground_top, self)
 	if Input.is_action_just_pressed("Q"):
 		# place the building
 		townhallBuildableEntity.input_add_logic(self)
 		houseBuildableEntity.input_add_logic(self)
+		treeBuildableEntity.input_add_logic(self)
 	if Input.is_action_just_pressed("E"):
 		# cancel building placement
 		townhallBuildableEntity.input_remove_logic()
 		houseBuildableEntity.input_remove_logic()
+		treeBuildableEntity.input_remove_logic()
 	
 func _move_reward():
 	var x_range = rand_range(-21.7, 21.7)
