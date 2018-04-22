@@ -13,9 +13,11 @@ onready var reward_delay = reward_delay_default
 onready var main_camera = $MainCamera
 onready var ground_top = $GroundTop
 onready var yellow_cube_spatial = $YellowCubeSpatial
-onready var yellow_cube_scene = load("res://scenes/YellowCube.tscn")
+#onready var yellow_cube_scene = load("res://scenes/YellowCube.tscn")
 onready var basic_house_scene = load("res://scenes/BasicHouse3.tscn")
+onready var basic_town_hall_scene = load("res://scenes/BasicTownHall.tscn")
 onready var no_gold_label = $NoGoldErrMsgTextureRect/NoGoldErrMsgLabel
+onready var city_tutorial_label = $CityTutorialMsgTextureRect2/CityTutorialMsgLabel
 
 onready var townhallBuildableEntity = null
 onready var houseBuildableEntity = null
@@ -90,13 +92,14 @@ func _ready():
 	no_gold_label.text = ""
 	townhallBuildableEntity = BuildableEntity.new()
 	townhallBuildableEntity.entity_ui_area = $TownHallUISpatial/TownHallUICube/Area
-	townhallBuildableEntity.scene_instance = yellow_cube_scene
+	townhallBuildableEntity.scene_instance = basic_town_hall_scene
 	townhallBuildableEntity.gold_price = 125
 	houseBuildableEntity = BuildableEntity.new()
 	houseBuildableEntity.entity_ui_area = $HouseUISpatial/HouseUICube/Area
 	houseBuildableEntity.scene_instance = basic_house_scene
 	houseBuildableEntity.gold_price = 75
 	#houseBuildableEntity.gold_price = 1
+	city_tutorial_label.text = "Build a city with gold. Town hall: " + str(townhallBuildableEntity.gold_price) + "g, House: " + str(houseBuildableEntity.gold_price) + "g"
 	pass
 
 func _do_lmb():
