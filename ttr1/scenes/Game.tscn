@@ -1,11 +1,12 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://scripts/Game.gd" type="Script" id=1]
 [ext_resource path="res://scenes/BasicCube.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/YellowCube.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scenes/BasicTree1.tscn" type="PackedScene" id=4]
+[ext_resource path="res://scenes/BasicBench1.tscn" type="PackedScene" id=5]
 
-[node name="Game" type="Node"]
+[node name="Game" type="Node" index="0"]
 
 script = ExtResource( 1 )
 
@@ -409,6 +410,10 @@ omni_shadow_detail = 1
 
 transform = Transform( 0.254988, 0, -0.209478, 0, 0.33, 0, 0.209478, 0, 0.254988, 0, 0, -11.5492 )
 visible = false
-_sections_unfolded = [ "Transform" ]
+
+[node name="BasicBench1" parent="." index="15" instance=ExtResource( 5 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6194, 0, -13.4804 )
+visible = false
 
 
