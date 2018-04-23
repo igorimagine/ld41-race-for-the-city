@@ -10,7 +10,7 @@ config_version=3
 
 [application]
 
-config/name="TimeToRace"
+config/name="Race for the City V02"
 run/main_scene="res://scenes/Game.tscn"
 config/icon="res://icon.png"
 
@@ -29,6 +29,8 @@ LMB=[ Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_nam
 Q=[ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":81,"unicode":0,"echo":false,"script":null)
  ]
 E=[ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":69,"unicode":0,"echo":false,"script":null)
+ ]
+Space=[ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":32,"unicode":0,"echo":false,"script":null)
  ]
 
 [rendering]

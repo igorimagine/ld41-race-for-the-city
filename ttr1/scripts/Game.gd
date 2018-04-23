@@ -16,6 +16,8 @@ onready var yellow_cube_spatial = $YellowCubeSpatial
 #onready var yellow_cube_scene = load("res://scenes/YellowCube.tscn")
 onready var no_gold_label = $NoGoldErrMsgTextureRect/NoGoldErrMsgLabel
 onready var city_tutorial_label = $CityTutorialMsgTextureRect2/CityTutorialMsgLabel
+onready var last_buildable_entity_selected = -1
+onready var buildable_entities = []
 onready var basic_house_scene = load("res://scenes/BasicHouse3.tscn")
 onready var basic_town_hall_scene = load("res://scenes/BasicTownHall.tscn")
 onready var basic_tree_scene = load("res://scenes/BasicTree1.tscn")
@@ -33,21 +35,29 @@ func _ready():
 	_move_reward()
 	no_gold_label.text = ""
 	townhallBuildableEntity = BuildableEntity.new()
+	townhallBuildableEntity.entity_id = 0
 	townhallBuildableEntity.entity_ui_area = $TownHallUISpatial/TownHallUICube/Area
 	townhallBuildableEntity.scene_instance = basic_town_hall_scene
 	townhallBuildableEntity.gold_price = 250
+	buildable_entities.append(townhallBuildableEntity)
 	houseBuildableEntity = BuildableEntity.new()
+	houseBuildableEntity.entity_id = 1
 	houseBuildableEntity.entity_ui_area = $HouseUISpatial/HouseUICube/Area
 	houseBuildableEntity.scene_instance = basic_house_scene
 	houseBuildableEntity.gold_price = 150
+	buildable_entities.append(houseBuildableEntity)
 	treeBuildableEntity = BuildableEntity.new()
+	treeBuildableEntity.entity_id = 2
 	treeBuildableEntity.entity_ui_area = $TreeUISpatial/TreeUICube/Area
 	treeBuildableEntity.scene_instance = basic_tree_scene
 	treeBuildableEntity.gold_price = 65
+	buildable_entities.append(treeBuildableEntity)
 	benchBuildableEntity = BuildableEntity.new()
+	benchBuildableEntity.entity_id = 3
 	benchBuildableEntity.entity_ui_area = $BenchUISpatial/BenchUICube/Area
 	benchBuildableEntity.scene_instance = basic_bench_scene
 	benchBuildableEntity.gold_price = 65
+	buildable_entities.append(benchBuildableEntity)
 	if test_prices:
 		townhallBuildableEntity.gold_price = 1
 		houseBuildableEntity.gold_price = 1
@@ -57,6 +67,7 @@ func _ready():
 	pass
 
 class BuildableEntity:
+	var entity_id = -1
 	var entity_ui_area = null
 	var entity_ui_area_hit = false
 	var entity_must_be_built = false
@@ -67,12 +78,16 @@ class BuildableEntity:
 	var scene_instance = null
 	var gold_price = 0
 	
-	func do_lmb_logic(hit):
+	func do_lmb_logic(hit, parent):
 		if hit.size() != 0:
 			if hit.collider_id == entity_ui_area.get_instance_id():
-				entity_ui_area_hit = true
-				entity_building_number += 1
+				lmb_inner_logic(parent)
 				
+	func lmb_inner_logic(parent):
+		entity_ui_area_hit = true
+		entity_building_number += 1
+		parent.last_buildable_entity_selected = entity_id
+	
 	func process_beginning():
 		entity_building = null
 		if (last_entity_building_number > 0):
@@ -101,12 +116,17 @@ class BuildableEntity:
 	
 	func input_add_logic(gold_entity):
 		if entity_must_be_built:
-			if gold_entity.gold >= gold_price:
-				entity_must_be_built = false
-				entity_ui_area_hit = false
-				gold_entity.gold -= gold_price
-			else:
-				err_msg_not_enough_gold(gold_price, gold_entity.no_gold_label)
+			entity_can_be_built(gold_entity)
+				
+	func entity_can_be_built(gold_entity):
+		if gold_entity.gold >= gold_price:
+			entity_must_be_built = false
+			entity_ui_area_hit = false
+			gold_entity.gold -= gold_price
+			return true
+		else:
+			err_msg_not_enough_gold(gold_price, gold_entity.no_gold_label)		
+			return false
 				
 	func err_msg_not_enough_gold(gold_price, label):
 		#finish me
@@ -128,10 +148,11 @@ func _do_lmb():
 	var to = ray_origin + ray_direction * 1000.0
 	var space_state = ground_top.get_world().direct_space_state
 	var hit = space_state.intersect_ray(from, to)
-	townhallBuildableEntity.do_lmb_logic(hit)
-	houseBuildableEntity.do_lmb_logic(hit)
-	treeBuildableEntity.do_lmb_logic(hit)
-	benchBuildableEntity.do_lmb_logic(hit)
+	# INSERT LAST BUILDING LOGIC IN THE IMPLEMENTING METHOD
+	townhallBuildableEntity.do_lmb_logic(hit, self)
+	houseBuildableEntity.do_lmb_logic(hit, self)
+	treeBuildableEntity.do_lmb_logic(hit, self)
+	benchBuildableEntity.do_lmb_logic(hit, self)
 
 func _process(delta):
 	reward_delay -= 1
@@ -175,7 +196,29 @@ func _process(delta):
 		houseBuildableEntity.input_remove_logic()
 		treeBuildableEntity.input_remove_logic()
 		benchBuildableEntity.input_remove_logic()
-	
+	if Input.is_action_just_pressed("Space"):
+		#continous build
+		#failed idea: benchBuildableEntity.do_lmb_logic(null, true)
+		
+		#treeBuildableEntity.lmb_inner_logic() #it works!
+		# Dirty hack, game jam ending soon
+#		if entity_can_be_built():
+#			_add_building()
+#			if last_buildable_entity_selected != -1:
+#				buildable_entities[last_buildable_entity_selected].lmb_inner_logic(self)
+				
+		if last_buildable_entity_selected != -1:
+			var currently_selected_entity = buildable_entities[last_buildable_entity_selected]
+			if currently_selected_entity.entity_can_be_built(self):
+				_add_building()
+				buildable_entities[last_buildable_entity_selected].lmb_inner_logic(self)
+
+func _add_building():
+	townhallBuildableEntity.input_add_logic(self)
+	houseBuildableEntity.input_add_logic(self)
+	treeBuildableEntity.input_add_logic(self)
+	benchBuildableEntity.input_add_logic(self)
+
 func _move_reward():
 	var x_range = rand_range(-21.7, 21.7)
 	var z_range = rand_range(-4.0, 5.1)

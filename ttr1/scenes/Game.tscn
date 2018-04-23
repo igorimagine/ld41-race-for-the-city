@@ -131,9 +131,9 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 248.0
+margin_left = 210.0
 margin_top = 338.0
-margin_right = 991.0
+margin_right = 1123.0
 margin_bottom = 352.0
 rect_scale = Vector2( 0.8, 0.8 )
 rect_pivot_offset = Vector2( 0, 0 )
@@ -142,7 +142,7 @@ mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 4
-text = "Use WASD to drive the car and collect gold rewards. Left mouse click selects a building. Q builds it, and E cancels it."
+text = "Use WASD to drive the car and collect gold rewards. Left mouse click selects a building. Q builds it, and E cancels it. Space builds continuously"
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
@@ -226,7 +226,47 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Rect", "Visibility" ]
 
-[node name="CarSpatial" type="Spatial" parent="." index="8"]
+[node name="BuildingsMsgTextureRect" type="TextureRect" parent="." index="8"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 40.0
+margin_bottom = 40.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+stretch_mode = 0
+
+[node name="BuildingsMsgLabel" type="Label" parent="BuildingsMsgTextureRect" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 46.0
+margin_top = 74.0
+margin_right = 392.0
+margin_bottom = 88.0
+rect_scale = Vector2( 0.8, 0.8 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Buildings"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Rect", "Visibility", "custom_colors" ]
+
+[node name="CarSpatial" type="Spatial" parent="." index="9"]
 
 editor/display_folded = true
 
@@ -257,7 +297,7 @@ omni_shadow_mode = 1
 omni_shadow_detail = 1
 _sections_unfolded = [ "Light" ]
 
-[node name="RewardSpatial" type="Spatial" parent="." index="9"]
+[node name="RewardSpatial" type="Spatial" parent="." index="10"]
 
 editor/display_folded = true
 transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -18.268, 0, 0 )
@@ -288,7 +328,7 @@ omni_shadow_mode = 1
 omni_shadow_detail = 1
 _sections_unfolded = [ "Light" ]
 
-[node name="TownHallUISpatial" type="Spatial" parent="." index="10"]
+[node name="TownHallUISpatial" type="Spatial" parent="." index="11"]
 
 transform = Transform( 0.33, 0, 0, 0, 0.33, 0, 0, 0, 0.33, -25.218, 0, -19.7852 )
 _sections_unfolded = [ "Transform" ]
@@ -317,7 +357,7 @@ omni_attenuation = 1.0
 omni_shadow_mode = 1
 omni_shadow_detail = 1
 
-[node name="HouseUISpatial" type="Spatial" parent="." index="11"]
+[node name="HouseUISpatial" type="Spatial" parent="." index="12"]
 
 transform = Transform( 0.33, 0, 0, 0, 0.33, 0, 0, 0, 0.33, -25.218, 0, -17.5801 )
 _sections_unfolded = [ "Transform" ]
@@ -346,7 +386,7 @@ omni_attenuation = 1.0
 omni_shadow_mode = 1
 omni_shadow_detail = 1
 
-[node name="TreeUISpatial" type="Spatial" parent="." index="12"]
+[node name="TreeUISpatial" type="Spatial" parent="." index="13"]
 
 transform = Transform( 0.33, 0, 0, 0, 0.33, 0, 0, 0, 0.33, -25.218, 0, -15.3206 )
 _sections_unfolded = [ "Transform" ]
@@ -375,7 +415,7 @@ omni_attenuation = 1.0
 omni_shadow_mode = 1
 omni_shadow_detail = 1
 
-[node name="BenchUISpatial" type="Spatial" parent="." index="13"]
+[node name="BenchUISpatial" type="Spatial" parent="." index="14"]
 
 transform = Transform( 0.33, 0, 0, 0, 0.33, 0, 0, 0, 0.33, -25.218, 0, -13.1925 )
 _sections_unfolded = [ "Transform" ]
@@ -404,7 +444,7 @@ omni_attenuation = 1.0
 omni_shadow_mode = 1
 omni_shadow_detail = 1
 
-[node name="YellowCubeSpatial" type="Spatial" parent="." index="14"]
+[node name="YellowCubeSpatial" type="Spatial" parent="." index="15"]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 68.2062, 0, -17.0712 )
 _sections_unfolded = [ "Transform" ]
@@ -435,12 +475,12 @@ omni_attenuation = 1.0
 omni_shadow_mode = 1
 omni_shadow_detail = 1
 
-[node name="BasicTree1" parent="." index="15" instance=ExtResource( 4 )]
+[node name="BasicTree1" parent="." index="16" instance=ExtResource( 4 )]
 
 transform = Transform( 0.254988, 0, -0.209478, 0, 0.33, 0, 0.209478, 0, 0.254988, 0, 0, -11.5492 )
 visible = false
 
-[node name="BasicBench1" parent="." index="16" instance=ExtResource( 5 )]
+[node name="BasicBench1" parent="." index="17" instance=ExtResource( 5 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6194, 0, -13.4804 )
 visible = false
